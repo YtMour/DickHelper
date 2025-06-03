@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useRecordStore } from '@/stores/recordStore'
 import * as echarts from 'echarts'
 import type { EChartsOption } from 'echarts'
@@ -26,10 +26,25 @@ const chartContainer = ref<HTMLElement>()
 let chart: echarts.ECharts | null = null
 
 // 初始化图表
-const initChart = () => {
+const initChart = async () => {
   if (!chartContainer.value) return
+  
+  await nextTick()
+  
+  if (chart) {
+    chart.dispose()
+  }
+  
   chart = echarts.init(chartContainer.value)
   updateChart()
+  
+  // 确保图表在容器大小变化时重新调整
+  const resizeObserver = new ResizeObserver(() => {
+    if (chart) {
+      chart.resize()
+    }
+  })
+  resizeObserver.observe(chartContainer.value)
 }
 
 // 更新图表数据
@@ -40,9 +55,9 @@ const updateChart = () => {
     title: {
       text: '活动统计',
       left: 'center',
-      top: 5,
+      top: 10,
       textStyle: {
-        fontSize: 12
+        fontSize: 14
       }
     },
     tooltip: {
@@ -53,23 +68,23 @@ const updateChart = () => {
     },
     legend: {
       data: ['次数', '平均时长', '平均心情', '平均精力'],
-      top: 25,
+      top: 35,
       textStyle: {
-        fontSize: 11
+        fontSize: 12
       }
     },
     grid: {
-      left: '8%',
-      right: '8%',
-      bottom: '5%',
-      top: 50,
+      left: '10%',
+      right: '10%',
+      bottom: '10%',
+      top: 65,
       containLabel: true
     },
     xAxis: {
       type: 'category',
       data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
       axisLabel: {
-        fontSize: 10
+        fontSize: 11
       }
     },
     yAxis: [
@@ -78,10 +93,10 @@ const updateChart = () => {
         name: '次数',
         position: 'left',
         axisLabel: {
-          fontSize: 10
+          fontSize: 11
         },
         nameTextStyle: {
-          fontSize: 10
+          fontSize: 11
         }
       },
       {
@@ -91,10 +106,10 @@ const updateChart = () => {
         min: 0,
         max: 5,
         axisLabel: {
-          fontSize: 10
+          fontSize: 11
         },
         nameTextStyle: {
-          fontSize: 10
+          fontSize: 11
         }
       }
     ],
@@ -144,7 +159,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
-  chart?.dispose()
+  if (chart) {
+    chart.dispose()
+    chart = null
+  }
 })
 </script>
 
@@ -152,6 +170,7 @@ onUnmounted(() => {
 .stats-chart {
   width: 100%;
   height: 100%;
+  min-height: 350px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -166,16 +185,16 @@ onUnmounted(() => {
 }
 
 :deep(.el-card__header) {
-  padding: 6px;
+  padding: 8px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   flex-shrink: 0;
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 6px;
+  padding: 8px;
   overflow: hidden;
-  min-height: 0;
+  min-height: 300px;
   display: flex;
   flex-direction: column;
 }
@@ -185,12 +204,12 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .chart-content {
   flex: 1;
-  min-height: 0;
+  min-height: 280px;
   width: 100%;
   height: 100%;
   position: relative;
@@ -198,12 +217,34 @@ onUnmounted(() => {
 
 /* 响应式布局 */
 @media (max-width: 768px) {
-  :deep(.el-card__header) {
-    padding: 4px;
+  .stats-chart {
+    min-height: 300px;
   }
 
   :deep(.el-card__body) {
-    padding: 4px;
+    min-height: 250px;
+  }
+
+  .chart-content {
+    min-height: 230px;
+  }
+
+  .chart-header {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-chart {
+    min-height: 280px;
+  }
+
+  :deep(.el-card__body) {
+    min-height: 230px;
+  }
+
+  .chart-content {
+    min-height: 210px;
   }
 
   .chart-header {

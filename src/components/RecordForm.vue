@@ -243,6 +243,7 @@ const exportData = async () => {
 .record-form {
   width: 100%;
   height: 100%;
+  min-height: 400px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -257,14 +258,14 @@ const exportData = async () => {
 }
 
 :deep(.el-card__header) {
-  padding: 6px;
+  padding: 8px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   flex-shrink: 0;
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 6px;
+  padding: 8px;
   overflow: hidden;
   min-height: 0;
   display: flex;
@@ -275,7 +276,7 @@ const exportData = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .form-actions {
@@ -286,7 +287,7 @@ const exportData = async () => {
 .form-content {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   height: 100%;
   min-height: 0;
   overflow: hidden;
@@ -296,33 +297,34 @@ const exportData = async () => {
   display: flex;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 8px;
 }
 
 .timer-card {
   width: 100%;
-  max-width: 180px;
+  max-width: 200px;
   text-align: center;
   background: linear-gradient(135deg, var(--el-color-primary-light-8) 0%, var(--el-color-primary-light-9) 100%);
   border: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 6px;
+  padding: 8px;
 }
 
 .timer-display {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin-bottom: 4px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .timer-icon {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--el-color-primary);
 }
 
 .timer-text {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   font-family: monospace;
   color: var(--el-color-primary);
@@ -331,23 +333,23 @@ const exportData = async () => {
 .timer-controls {
   display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .form-fields {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 2px;
+  padding: 0 4px;
 }
 
 :deep(.el-form-item) {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 :deep(.el-form-item__label) {
-  padding-bottom: 2px;
-  font-size: 12px;
+  padding-bottom: 4px;
+  font-size: 13px;
   line-height: 1.2;
 }
 
@@ -356,18 +358,18 @@ const exportData = async () => {
 }
 
 :deep(.el-input__wrapper) {
-  padding: 0 6px;
+  padding: 0 8px;
 }
 
 :deep(.el-input__inner) {
-  height: 24px;
-  font-size: 12px;
+  height: 28px;
+  font-size: 13px;
 }
 
 :deep(.el-button--small) {
-  padding: 3px 6px;
-  height: 24px;
-  font-size: 12px;
+  padding: 4px 8px;
+  height: 28px;
+  font-size: 13px;
 }
 
 :deep(.el-select) {
@@ -375,24 +377,61 @@ const exportData = async () => {
 }
 
 :deep(.el-rate) {
-  height: 20px;
+  height: 24px;
 }
 
 :deep(.el-rate__item) {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 :deep(.el-textarea__inner) {
-  font-size: 12px;
-  padding: 4px 6px;
+  font-size: 13px;
+  padding: 6px 8px;
 }
 
 :deep(.el-checkbox) {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* 响应式布局 */
 @media (max-width: 768px) {
+  .record-form {
+    min-height: 350px;
+  }
+
+  .timer-card {
+    max-width: 180px;
+    padding: 6px;
+  }
+
+  .timer-text {
+    font-size: 18px;
+  }
+
+  .form-fields {
+    padding: 0 2px;
+  }
+
+  :deep(.el-form-item) {
+    margin-bottom: 6px;
+  }
+
+  :deep(.el-form-item__label) {
+    font-size: 12px;
+  }
+
+  :deep(.el-button--small) {
+    padding: 3px 6px;
+    height: 24px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .record-form {
+    min-height: 320px;
+  }
+
   .timer-card {
     max-width: 160px;
     padding: 4px;
@@ -400,14 +439,6 @@ const exportData = async () => {
 
   .timer-text {
     font-size: 16px;
-  }
-
-  .form-fields {
-    padding: 0 1px;
-  }
-
-  :deep(.el-form-item) {
-    margin-bottom: 4px;
   }
 
   :deep(.el-form-item__label) {

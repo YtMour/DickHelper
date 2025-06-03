@@ -144,6 +144,7 @@ const handleSelectionChange = (val: any[]) => {
 .history-list {
   width: 100%;
   height: 100%;
+  min-height: 400px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -158,14 +159,14 @@ const handleSelectionChange = (val: any[]) => {
 }
 
 :deep(.el-card__header) {
-  padding: 6px;
+  padding: 8px;
   border-bottom: 1px solid var(--el-border-color-lighter);
   flex-shrink: 0;
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 6px;
+  padding: 8px;
   overflow: hidden;
   min-height: 0;
   display: flex;
@@ -177,20 +178,20 @@ const handleSelectionChange = (val: any[]) => {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .header-actions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
 }
 
 .list-content {
   flex: 1;
-  min-height: 0;
+  min-height: 300px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 8px;
   position: relative;
 }
 
@@ -201,7 +202,7 @@ const handleSelectionChange = (val: any[]) => {
   right: 0;
   bottom: 0;
   height: 100%;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 :deep(.el-table__inner-wrapper) {
@@ -213,8 +214,8 @@ const handleSelectionChange = (val: any[]) => {
 }
 
 :deep(.el-table .el-table__cell) {
-  padding: 2px 0;
-  font-size: 12px;
+  padding: 4px 0;
+  font-size: 13px;
 }
 
 :deep(.el-table__header) {
@@ -222,7 +223,7 @@ const handleSelectionChange = (val: any[]) => {
 }
 
 :deep(.el-table__header .el-table__cell) {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
 }
 
@@ -231,59 +232,95 @@ const handleSelectionChange = (val: any[]) => {
 }
 
 .tag-item {
-  margin-right: 2px;
-  margin-bottom: 1px;
-  border-radius: 3px;
-  font-size: 10px;
-  padding: 0 3px;
-  height: 16px;
-  line-height: 14px;
+  margin-right: 3px;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 1px 4px;
+  height: 18px;
+  line-height: 16px;
 }
 
 :deep(.el-input) {
-  width: 120px;
+  width: 140px;
 }
 
 :deep(.el-input__wrapper) {
-  padding: 0 6px;
+  padding: 0 8px;
 }
 
 :deep(.el-input__inner) {
-  height: 24px;
-  font-size: 12px;
+  height: 28px;
+  font-size: 13px;
 }
 
 :deep(.el-button--small) {
-  padding: 3px 6px;
-  height: 24px;
-  font-size: 12px;
+  padding: 4px 8px;
+  height: 28px;
+  font-size: 13px;
 }
 
 :deep(.el-rate--small) {
-  height: 16px;
+  height: 18px;
 }
 
 :deep(.el-rate--small .el-rate__item) {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* 响应式布局 */
 @media (max-width: 768px) {
-  :deep(.el-card__header) {
-    padding: 4px;
+  .history-list {
+    min-height: 350px;
   }
 
-  :deep(.el-card__body) {
-    padding: 4px;
+  .list-content {
+    min-height: 250px;
   }
 
   .list-header {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .header-actions {
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
+    align-items: flex-end;
+  }
+
+  :deep(.el-input) {
+    width: 120px;
+  }
+
+  :deep(.el-table) {
+    font-size: 12px;
+  }
+
+  :deep(.el-table .el-table__cell) {
+    padding: 2px 0;
+    font-size: 12px;
+  }
+
+  :deep(.el-button--small) {
+    padding: 3px 6px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .tag-item {
+    font-size: 10px;
+    height: 16px;
+    line-height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .history-list {
+    min-height: 320px;
+  }
+
+  .list-content {
+    min-height: 220px;
   }
 
   :deep(.el-input) {

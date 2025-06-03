@@ -131,18 +131,16 @@ const openGitHub = () => {
 .main-content {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem;
 }
 
 .home-page,
 .history-page {
-  height: 100%;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .welcome-section {
@@ -173,15 +171,15 @@ const openGitHub = () => {
 
 .content-section {
   flex: 1;
-  min-height: 0;
+  min-height: 500px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
-  overflow: hidden;
-  padding: 0.5rem;
+  padding: 0 0.5rem 0.5rem;
 }
 
 .history-page {
+  min-height: calc(100vh - 150px);
   padding: 0.5rem;
 }
 
@@ -198,8 +196,8 @@ const openGitHub = () => {
 
 /* 响应式布局 */
 @media (max-width: 768px) {
-  .main-container {
-    height: calc(100vh - 32px);
+  .main-content {
+    padding: 0.25rem;
   }
 
   .welcome-section {
@@ -222,12 +220,14 @@ const openGitHub = () => {
 
   .content-section {
     grid-template-columns: 1fr;
-    gap: 0.25rem;
-    padding: 0.25rem;
+    gap: 0.5rem;
+    padding: 0 0.25rem 0.25rem;
+    min-height: 600px;
   }
 
   .history-page {
     padding: 0.25rem;
+    min-height: calc(100vh - 120px);
   }
 }
 
@@ -241,8 +241,9 @@ const openGitHub = () => {
   }
 
   .content-section {
-    padding: 0.125rem;
-    gap: 0.125rem;
+    padding: 0 0.125rem 0.125rem;
+    gap: 0.25rem;
+    min-height: 650px;
   }
 
   .history-page {
