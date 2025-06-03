@@ -243,8 +243,9 @@ const exportData = async () => {
 .record-form {
   width: 100%;
   height: 100%;
-  min-height: 400px;
-  overflow: hidden;
+  min-height: 500px;
+  max-height: none;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -253,21 +254,26 @@ const exportData = async () => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 :deep(.el-card__header) {
-  padding: 8px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 8px;
-  overflow: hidden;
-  min-height: 0;
+  padding: 1rem;
+  overflow: visible;
+  min-height: 400px;
+  max-height: none;
   display: flex;
   flex-direction: column;
 }
@@ -276,81 +282,157 @@ const exportData = async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
 }
 
 .form-actions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 .form-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  height: 100%;
+  gap: 0.75rem;
+  height: auto;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .timer-section {
   display: flex;
   justify-content: center;
   flex-shrink: 0;
-  margin-bottom: 8px;
+  margin-bottom: 0.75rem;
 }
 
 .timer-card {
   width: 100%;
   max-width: 200px;
   text-align: center;
-  background: linear-gradient(135deg, var(--el-color-primary-light-8) 0%, var(--el-color-primary-light-9) 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  padding: 8px;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+  padding: 1rem 0.75rem;
+  border-radius: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.timer-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .timer-display {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .timer-icon {
-  font-size: 16px;
-  color: var(--el-color-primary);
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .timer-text {
   font-size: 20px;
-  font-weight: 600;
-  font-family: monospace;
-  color: var(--el-color-primary);
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
 }
 
 .timer-controls {
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+:deep(.timer-card .el-button) {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  color: white !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+:deep(.timer-card .el-button:hover) {
+  background: rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+:deep(.timer-card .el-button:disabled) {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .form-fields {
   flex: 1;
-  min-height: 0;
+  min-height: 300px;
+  max-height: none;
   overflow-y: auto;
-  padding: 0 4px;
+  padding: 0 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+}
+
+.form-fields::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-fields::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-fields::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 3px;
+}
+
+.form-fields::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.5);
 }
 
 :deep(.el-form-item) {
-  margin-bottom: 8px;
+  margin-bottom: 0.75rem;
+  background: rgba(102, 126, 234, 0.02);
+  padding: 0.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  transition: all 0.3s ease;
+}
+
+:deep(.el-form-item:hover) {
+  background: rgba(102, 126, 234, 0.05);
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-1px);
 }
 
 :deep(.el-form-item__label) {
-  padding-bottom: 4px;
-  font-size: 13px;
+  padding-bottom: 6px;
+  font-size: 14px;
   line-height: 1.2;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
 }
 
 :deep(.el-form-item__content) {
@@ -358,97 +440,122 @@ const exportData = async () => {
 }
 
 :deep(.el-input__wrapper) {
-  padding: 0 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+:deep(.el-input__wrapper:hover) {
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
 :deep(.el-input__inner) {
-  height: 28px;
-  font-size: 13px;
+  height: 32px;
+  font-size: 14px;
 }
 
 :deep(.el-button--small) {
-  padding: 4px 8px;
-  height: 28px;
-  font-size: 13px;
+  padding: 6px 12px;
+  height: 32px;
+  font-size: 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button--small:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 :deep(.el-select) {
   width: 100%;
 }
 
+:deep(.el-select .el-input__wrapper) {
+  border-radius: 8px;
+}
+
 :deep(.el-rate) {
-  height: 24px;
+  height: 28px;
 }
 
 :deep(.el-rate__item) {
-  font-size: 16px;
+  font-size: 18px;
+  margin-right: 4px;
 }
 
 :deep(.el-textarea__inner) {
-  font-size: 13px;
-  padding: 6px 8px;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+:deep(.el-textarea__inner:hover) {
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+:deep(.el-textarea__inner:focus) {
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
 }
 
 :deep(.el-checkbox) {
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  background-color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+}
+
+/* 上传按钮样式 */
+:deep(.upload-demo .el-button) {
+  background: linear-gradient(135deg, var(--el-color-success), var(--el-color-success-light-3));
+  border: none;
+  color: white;
+  font-weight: 500;
+}
+
+:deep(.upload-demo .el-button:hover) {
+  background: linear-gradient(135deg, var(--el-color-success-dark-2), var(--el-color-success));
 }
 
 /* 响应式布局 */
 @media (max-width: 768px) {
   .record-form {
+    min-height: 450px;
+  }
+
+  :deep(.el-card__body) {
     min-height: 350px;
   }
 
-  .timer-card {
-    max-width: 180px;
-    padding: 6px;
-  }
-
-  .timer-text {
-    font-size: 18px;
-  }
-
   .form-fields {
-    padding: 0 2px;
-  }
-
-  :deep(.el-form-item) {
-    margin-bottom: 6px;
-  }
-
-  :deep(.el-form-item__label) {
-    font-size: 12px;
-  }
-
-  :deep(.el-button--small) {
-    padding: 3px 6px;
-    height: 24px;
-    font-size: 12px;
+    min-height: 250px;
   }
 }
 
 @media (max-width: 480px) {
   .record-form {
+    min-height: 400px;
+  }
+
+  :deep(.el-card__body) {
     min-height: 320px;
   }
 
-  .timer-card {
-    max-width: 160px;
-    padding: 4px;
-  }
-
-  .timer-text {
-    font-size: 16px;
-  }
-
-  :deep(.el-form-item__label) {
-    font-size: 11px;
-  }
-
-  :deep(.el-button--small) {
-    padding: 2px 4px;
-    height: 20px;
-    font-size: 11px;
+  .form-fields {
+    min-height: 220px;
   }
 }
 </style>

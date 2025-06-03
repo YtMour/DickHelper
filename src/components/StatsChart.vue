@@ -170,6 +170,7 @@ onUnmounted(() => {
 .stats-chart {
   width: 100%;
   height: 100%;
+  max-height: calc(100vh - 250px);
   min-height: 350px;
   overflow: hidden;
   display: flex;
@@ -180,23 +181,29 @@ onUnmounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 :deep(.el-card__header) {
-  padding: 8px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 8px;
+  padding: 1rem;
   overflow: hidden;
-  min-height: 300px;
+  min-height: 280px;
+  max-height: calc(100vh - 320px);
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
 }
 
 .chart-header {
@@ -204,15 +211,30 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  position: relative;
+}
+
+.chart-header::after {
+  content: '📊';
+  position: absolute;
+  right: 0;
+  font-size: 18px;
+  opacity: 0.7;
 }
 
 .chart-content {
   flex: 1;
-  min-height: 280px;
+  min-height: 250px;
+  max-height: calc(100vh - 380px);
   width: 100%;
   height: 100%;
   position: relative;
+  background: radial-gradient(circle at 30% 30%, rgba(102, 126, 234, 0.05), transparent 70%);
+  border-radius: 12px;
+  padding: 8px;
 }
 
 /* 响应式布局 */
@@ -221,16 +243,26 @@ onUnmounted(() => {
     min-height: 300px;
   }
 
+  :deep(.el-card__header) {
+    padding: 0.75rem;
+  }
+
   :deep(.el-card__body) {
+    padding: 0.75rem;
     min-height: 250px;
   }
 
   .chart-content {
     min-height: 230px;
+    padding: 6px;
   }
 
   .chart-header {
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  .chart-header::after {
+    font-size: 16px;
   }
 }
 
@@ -239,16 +271,26 @@ onUnmounted(() => {
     min-height: 280px;
   }
 
+  :deep(.el-card__header) {
+    padding: 0.5rem;
+  }
+
   :deep(.el-card__body) {
+    padding: 0.5rem;
     min-height: 230px;
   }
 
   .chart-content {
     min-height: 210px;
+    padding: 4px;
   }
 
   .chart-header {
-    font-size: 12px;
+    font-size: 13px;
+  }
+
+  .chart-header::after {
+    font-size: 14px;
   }
 }
 </style>

@@ -144,7 +144,8 @@ const handleSelectionChange = (val: any[]) => {
 .history-list {
   width: 100%;
   height: 100%;
-  min-height: 400px;
+  max-height: calc(100vh - 180px);
+  min-height: 350px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -154,23 +155,29 @@ const handleSelectionChange = (val: any[]) => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 :deep(.el-card__header) {
-  padding: 8px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 :deep(.el-card__body) {
   flex: 1;
-  padding: 8px;
+  padding: 1rem;
   overflow: hidden;
-  min-height: 0;
+  min-height: 280px;
+  max-height: calc(100vh - 250px);
   display: flex;
   flex-direction: column;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.9));
 }
 
 .list-header {
@@ -178,21 +185,29 @@ const handleSelectionChange = (val: any[]) => {
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  margin-bottom: 0.5rem;
 }
 
 .header-actions {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
 }
 
 .list-content {
   flex: 1;
-  min-height: 300px;
+  min-height: 250px;
+  max-height: calc(100vh - 320px);
   overflow: hidden;
-  margin-top: 8px;
+  margin-top: 12px;
   position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 :deep(.el-table) {
@@ -203,69 +218,156 @@ const handleSelectionChange = (val: any[]) => {
   bottom: 0;
   height: 100%;
   font-size: 13px;
+  background: transparent;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 :deep(.el-table__inner-wrapper) {
   height: 100%;
+  border-radius: 12px;
 }
 
 :deep(.el-table__body-wrapper) {
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+}
+
+:deep(.el-table__body-wrapper::-webkit-scrollbar) {
+  width: 8px;
+}
+
+:deep(.el-table__body-wrapper::-webkit-scrollbar-track) {
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 4px;
+}
+
+:deep(.el-table__body-wrapper::-webkit-scrollbar-thumb) {
+  background: rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+}
+
+:deep(.el-table__body-wrapper::-webkit-scrollbar-thumb:hover) {
+  background: rgba(102, 126, 234, 0.5);
 }
 
 :deep(.el-table .el-table__cell) {
-  padding: 4px 0;
+  padding: 8px 0;
   font-size: 13px;
+  border-bottom: 1px solid rgba(102, 126, 234, 0.08);
 }
 
 :deep(.el-table__header) {
-  background-color: var(--el-color-primary-light-9);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border-radius: 12px 12px 0 0;
 }
 
 :deep(.el-table__header .el-table__cell) {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--el-text-color-primary);
+  border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+  background: transparent;
 }
 
 :deep(.el-table__row) {
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+:deep(.el-table__row:hover) {
+  background: rgba(102, 126, 234, 0.05) !important;
+  transform: scale(1.002);
+}
+
+:deep(.el-table__row:nth-child(even)) {
+  background: rgba(248, 250, 252, 0.5);
+}
+
+:deep(.el-table__row:nth-child(even):hover) {
+  background: rgba(102, 126, 234, 0.08) !important;
 }
 
 .tag-item {
-  margin-right: 3px;
+  margin-right: 4px;
   margin-bottom: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 11px;
-  padding: 1px 4px;
-  height: 18px;
+  padding: 2px 6px;
+  height: 20px;
   line-height: 16px;
+  background: linear-gradient(135deg, var(--el-color-primary-light-7), var(--el-color-primary-light-8));
+  color: var(--el-color-primary);
+  border: 1px solid var(--el-color-primary-light-5);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tag-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
 }
 
 :deep(.el-input) {
-  width: 140px;
+  width: 160px;
 }
 
 :deep(.el-input__wrapper) {
-  padding: 0 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+:deep(.el-input__wrapper:hover) {
+  border-color: rgba(102, 126, 234, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+:deep(.el-input__wrapper.is-focus) {
+  border-color: var(--el-color-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  background: white;
 }
 
 :deep(.el-input__inner) {
-  height: 28px;
+  height: 32px;
   font-size: 13px;
 }
 
 :deep(.el-button--small) {
-  padding: 4px 8px;
-  height: 28px;
+  padding: 6px 12px;
+  height: 32px;
   font-size: 13px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+:deep(.el-button--small:hover) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.el-button--danger) {
+  background: linear-gradient(135deg, var(--el-color-danger), var(--el-color-danger-light-3));
+  border: none;
+  color: white;
+}
+
+:deep(.el-button--danger:hover) {
+  background: linear-gradient(135deg, var(--el-color-danger-dark-2), var(--el-color-danger));
 }
 
 :deep(.el-rate--small) {
-  height: 18px;
+  height: 20px;
 }
 
 :deep(.el-rate--small .el-rate__item) {
   font-size: 14px;
+  margin-right: 2px;
 }
 
 /* 响应式布局 */
@@ -274,22 +376,32 @@ const handleSelectionChange = (val: any[]) => {
     min-height: 350px;
   }
 
+  :deep(.el-card__header) {
+    padding: 0.75rem;
+  }
+
+  :deep(.el-card__body) {
+    padding: 0.75rem;
+  }
+
   .list-content {
     min-height: 250px;
+    margin-top: 8px;
   }
 
   .list-header {
-    font-size: 13px;
+    font-size: 14px;
+    margin-bottom: 0.25rem;
   }
 
   .header-actions {
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
     align-items: flex-end;
   }
 
   :deep(.el-input) {
-    width: 120px;
+    width: 140px;
   }
 
   :deep(.el-table) {
@@ -297,20 +409,21 @@ const handleSelectionChange = (val: any[]) => {
   }
 
   :deep(.el-table .el-table__cell) {
-    padding: 2px 0;
+    padding: 6px 0;
     font-size: 12px;
   }
 
   :deep(.el-button--small) {
-    padding: 3px 6px;
-    height: 24px;
+    padding: 4px 8px;
+    height: 28px;
     font-size: 12px;
   }
 
   .tag-item {
     font-size: 10px;
-    height: 16px;
+    height: 18px;
     line-height: 14px;
+    padding: 1px 4px;
   }
 }
 
@@ -319,12 +432,29 @@ const handleSelectionChange = (val: any[]) => {
     min-height: 320px;
   }
 
+  :deep(.el-card__header) {
+    padding: 0.5rem;
+  }
+
+  :deep(.el-card__body) {
+    padding: 0.5rem;
+  }
+
   .list-content {
     min-height: 220px;
+    margin-top: 6px;
+  }
+
+  .list-header {
+    font-size: 13px;
+  }
+
+  .header-actions {
+    gap: 6px;
   }
 
   :deep(.el-input) {
-    width: 100px;
+    width: 120px;
   }
 
   :deep(.el-table) {
@@ -332,20 +462,21 @@ const handleSelectionChange = (val: any[]) => {
   }
 
   :deep(.el-table .el-table__cell) {
-    padding: 1px 0;
+    padding: 4px 0;
     font-size: 11px;
   }
 
   :deep(.el-button--small) {
-    padding: 2px 4px;
-    height: 20px;
+    padding: 3px 6px;
+    height: 24px;
     font-size: 11px;
   }
 
   .tag-item {
     font-size: 9px;
-    height: 14px;
+    height: 16px;
     line-height: 12px;
+    padding: 1px 3px;
   }
 }
 </style>
