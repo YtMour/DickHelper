@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { ElConfigProvider } from 'element-plus'
-import { Platform, House, List } from '@element-plus/icons-vue'
+import { Platform, House, List, DataLine } from '@element-plus/icons-vue'
 import { useRecordStore } from '@/stores/recordStore'
 import RecordForm from './components/RecordForm.vue'
 import StatsChart from './components/StatsChart.vue'
 import HistoryList from './components/HistoryList.vue'
 import UpdateDialog from './components/UpdateDialog.vue'
 import TitleBar from './components/TitleBar.vue'
-
-// 组件名称声明
-const components = {
-  RecordForm,
-  StatsChart,
-  HistoryList,
-  UpdateDialog,
-  TitleBar
-}
 
 const store = useRecordStore()
 const activeTab = ref('home')
@@ -54,6 +45,10 @@ const openGitHub = () => {
               <el-icon><House /></el-icon>
               <template #title>主页</template>
             </el-menu-item>
+            <el-menu-item index="dashboard">
+              <el-icon><DataLine /></el-icon>
+              <template #title>仪表盘</template>
+            </el-menu-item>
             <el-menu-item index="history">
               <el-icon><List /></el-icon>
               <template #title>历史</template>
@@ -78,27 +73,28 @@ const openGitHub = () => {
                   <div class="action-buttons">
                     <el-button
                       type="primary"
+                      class="dashboard-button"
+                      @click="activeTab = 'dashboard'"
+                    >
+                      <el-icon><DataLine /></el-icon>
+                      进入仪表盘
+                    </el-button>
+                    <el-button
                       class="github-button"
                       @click="openGitHub"
                     >
                       <el-icon><Platform /></el-icon>
                       Star on GitHub
                     </el-button>
-                    <el-button
-                      type="success"
-                      class="feature-button"
-                      @click="activeTab = 'history'"
-                    >
-                      <el-icon><List /></el-icon>
-                      查看历史
-                    </el-button>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div class="content-section">
-                <record-form />
-                <stats-chart />
+            <div v-else-if="activeTab === 'dashboard'" key="dashboard" class="dashboard-page">
+              <div class="dashboard-content">
+                <record-form class="dashboard-item" />
+                <stats-chart class="dashboard-item" />
               </div>
             </div>
 
@@ -183,30 +179,48 @@ const openGitHub = () => {
   overflow-x: hidden;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  height: calc(100vh - 32px - 2rem); /* 减去标题栏高度和padding */
+  box-sizing: border-box;
 }
 
 .home-page,
-.history-page {
+.history-page,
+.dashboard-page {
   min-height: 100%;
   display: flex;
   flex-direction: column;
   height: 100%;
+  gap: 1rem;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  height: 100%;
+}
+
+.dashboard-item {
+  flex: 1 1 400px;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
 }
 
 .welcome-section {
-  flex-shrink: 0;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  margin-bottom: 1rem;
   overflow: hidden;
 }
 
 .welcome-content {
-  padding: 1.5rem;
+  padding: 2rem;
   text-align: center;
 }
 
@@ -215,17 +229,17 @@ const openGitHub = () => {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .app-logo {
-  font-size: 2.5rem;
+  font-size: 3rem;
   line-height: 1;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .welcome-title {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea, #764ba2);
   -webkit-background-clip: text;
@@ -237,22 +251,22 @@ const openGitHub = () => {
 
 .welcome-text {
   color: var(--el-text-color-secondary);
-  font-size: 0.9rem;
-  margin: 0.75rem 0;
+  font-size: 1rem;
+  margin: 1rem 0 1.5rem;
   font-weight: 500;
 }
 
 .action-buttons {
   display: flex;
-  gap: 0.75rem;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
 
-.github-button,
-.feature-button {
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
+.dashboard-button,
+.github-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   height: auto;
   border-radius: 12px;
   font-weight: 600;
@@ -260,21 +274,10 @@ const openGitHub = () => {
   transition: all 0.3s ease;
 }
 
-.github-button:hover,
-.feature-button:hover {
+.dashboard-button:hover,
+.github-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-}
-
-.content-section {
-  flex: 1;
-  min-height: 500px;
-  max-height: none;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  padding: 0;
-  overflow: visible;
 }
 
 .page-header {
@@ -304,10 +307,6 @@ const openGitHub = () => {
 .back-button {
   border-radius: 8px;
   font-weight: 500;
-}
-
-.history-page {
-  min-height: calc(100vh - 120px);
 }
 
 /* 过渡动画 */
@@ -352,19 +351,19 @@ const openGitHub = () => {
   .action-buttons {
     flex-direction: column;
     align-items: center;
+    gap: 0.75rem;
   }
 
-  .github-button,
-  .feature-button {
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-    width: 200px;
+  .dashboard-button,
+  .github-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    width: 220px;
   }
 
   .content-section {
     grid-template-columns: 1fr;
     gap: 0.75rem;
-    min-height: 600px;
   }
 
   .page-header {
@@ -389,31 +388,40 @@ const openGitHub = () => {
   }
 
   .welcome-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
 
   .welcome-text {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
-  .github-button,
-  .feature-button {
-    width: 180px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
   }
 
-  .content-section {
-    gap: 0.5rem;
-    min-height: 650px;
+  .dashboard-button,
+  .github-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    width: 220px;
   }
 
   .page-header {
-    padding: 0.75rem;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
   }
 
-  .page-title {
-    font-size: 1.2rem;
+  .history-page {
+    min-height: calc(100vh - 150px);
+  }
+
+  .content-section {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 </style>

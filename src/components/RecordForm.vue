@@ -13,9 +13,9 @@
               accept=".json"
               @change="handleFileChange"
             >
-              <el-button :icon="Upload">导入数据</el-button>
+              <el-button :icon="Upload" text bg>导入数据</el-button>
             </el-upload>
-            <el-button :icon="Download" @click="exportData">导出数据</el-button>
+            <el-button :icon="Download" @click="exportData" text bg>导出数据</el-button>
           </div>
         </div>
       </template>
@@ -51,7 +51,7 @@
         </div>
 
         <div class="form-fields">
-          <el-form label-position="top" size="small">
+          <el-form label-position="top" size="small" class="responsive-form">
             <el-form-item label="心情评分">
               <el-rate
                 v-model="mood"
@@ -93,7 +93,7 @@
               <el-input v-model="location" placeholder="请输入位置" size="small" />
             </el-form-item>
 
-            <el-form-item label="备注">
+            <el-form-item label="备注" class="form-item-full-width">
               <el-input
                 v-model="notes"
                 type="textarea"
@@ -103,7 +103,7 @@
               />
             </el-form-item>
 
-            <el-form-item>
+            <el-form-item class="form-item-full-width">
               <el-checkbox v-model="isPrivate" size="small">私密记录</el-checkbox>
             </el-form-item>
           </el-form>
@@ -116,8 +116,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRecordStore } from '@/stores/recordStore'
-import { ElMessage } from 'element-plus'
-import { Timer, CaretRight, VideoPlay, Upload, Download } from '@element-plus/icons-vue'
+import {
+  CaretRight,
+  CircleClose,
+  Download,
+  Timer,
+  Upload,
+  VideoPlay
+} from '@element-plus/icons-vue'
 import type { MasturbationRecord } from '@/types/record'
 import type { UploadFile } from 'element-plus'
 import { v4 as uuidv4 } from 'uuid'
@@ -179,10 +185,9 @@ const stopRecording = async () => {
   
   try {
     await store.addRecord(record)
-    ElMessage.success('记录保存成功')
     resetForm()
   } catch (error) {
-    ElMessage.error('记录保存失败')
+    // 处理记录保存失败的情况
   }
 }
 
@@ -210,12 +215,12 @@ const handleFileChange = async (uploadFile: UploadFile) => {
       const jsonData = e.target?.result as string
       const success = await store.importData(jsonData)
       if (success) {
-        ElMessage.success('数据导入成功')
+        // 处理数据导入成功的情况
       } else {
-        ElMessage.error('数据导入失败')
+        // 处理数据导入失败的情况
       }
     } catch (error) {
-      ElMessage.error('数据导入失败')
+      // 处理数据导入失败的情况
     }
   }
   reader.readAsText(file)
@@ -232,9 +237,8 @@ const exportData = async () => {
     a.download = `dickhelper-data-${new Date().toISOString().split('T')[0]}.json`
     a.click()
     URL.revokeObjectURL(url)
-    ElMessage.success('数据导出成功')
   } catch (error) {
-    ElMessage.error('数据导出失败')
+    // 处理数据导出失败的情况
   }
 }
 </script>
@@ -243,325 +247,189 @@ const exportData = async () => {
 .record-form {
   width: 100%;
   height: 100%;
-  min-height: 500px;
-  max-height: none;
-  overflow: visible;
   display: flex;
   flex-direction: column;
 }
 
 :deep(.el-card) {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.95);
+  flex: 1;
+  height: 100%;
 }
 
 :deep(.el-card__header) {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
 }
 
 :deep(.el-card__body) {
-  flex: 1;
-  padding: 1rem;
-  overflow: visible;
-  min-height: 400px;
-  max-height: none;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  padding-bottom: 10px; /* 减少一些内边距给表单留出空间 */
 }
 
 .form-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--el-text-color-primary);
 }
 
 .form-actions {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
+}
+
+.form-actions .el-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
 }
 
 .form-content {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  height: auto;
-  min-height: 0;
-  overflow: visible;
+  gap: 0.5rem; /* 减小间距 */
+}
+
+.responsive-form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 1rem;
+  flex-grow: 1;
+  flex-direction: column; /* 保持列方向，虽然grid会覆盖，但为flex-grow服务 */
+}
+
+.form-item-full-width {
+  grid-column: 1 / -1;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-item-full-width :deep(.el-form-item__content) {
+  flex-grow: 1;
+}
+
+.form-item-full-width :deep(.el-textarea__inner) {
+  height: 100% !important;
+  min-height: 48px; /* 保证一个最小高度 */
 }
 
 .timer-section {
+  flex-shrink: 0;
+}
+
+.form-action-center {
   display: flex;
   justify-content: center;
   flex-shrink: 0;
-  margin-bottom: 0.75rem;
+}
+
+.form-fields {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* 允许flex子元素收缩 */
 }
 
 .timer-card {
-  width: 100%;
-  max-width: 200px;
-  text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-  padding: 1rem 0.75rem;
-  border-radius: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
-  position: relative;
-  overflow: hidden;
+  border-radius: 12px;
+  border: none;
 }
 
-.timer-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
-  pointer-events: none;
+:deep(.timer-card .el-card__body) {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  height: auto;
 }
 
 .timer-display {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 1;
+  gap: 0.75rem;
 }
 
 .timer-icon {
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.9);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  font-size: 2.5rem;
 }
 
 .timer-text {
-  font-size: 20px;
-  font-weight: 700;
-  font-family: 'Courier New', monospace;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
+  font-size: 2.8rem;
+  font-weight: 600;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .timer-controls {
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  position: relative;
-  z-index: 1;
+  gap: 1rem;
 }
 
-:deep(.timer-card .el-button) {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  color: white !important;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+.timer-controls .el-button {
+  --el-button-text-color: white;
+  --el-button-hover-text-color: white;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
-:deep(.timer-card .el-button:hover) {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.timer-controls .el-button.is-disabled {
+  border-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
 }
 
-:deep(.timer-card .el-button:disabled) {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: rgba(255, 255, 255, 0.5) !important;
+.timer-controls .el-button--primary:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
-.form-fields {
-  flex: 1;
-  min-height: 300px;
-  max-height: none;
-  overflow-y: auto;
-  padding: 0 8px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
-}
-
-.form-fields::-webkit-scrollbar {
-  width: 6px;
-}
-
-.form-fields::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.form-fields::-webkit-scrollbar-thumb {
-  background: rgba(102, 126, 234, 0.3);
-  border-radius: 3px;
-}
-
-.form-fields::-webkit-scrollbar-thumb:hover {
-  background: rgba(102, 126, 234, 0.5);
-}
-
-:deep(.el-form-item) {
-  margin-bottom: 0.75rem;
-  background: rgba(102, 126, 234, 0.02);
-  padding: 0.5rem;
-  border-radius: 12px;
-  border: 1px solid rgba(102, 126, 234, 0.1);
-  transition: all 0.3s ease;
-}
-
-:deep(.el-form-item:hover) {
-  background: rgba(102, 126, 234, 0.05);
-  border-color: rgba(102, 126, 234, 0.2);
-  transform: translateY(-1px);
+.timer-controls .el-button--danger {
+  --el-button-hover-bg-color: #f89898;
+  --el-button-active-bg-color: #f78181;
+  --el-button-active-border-color: #f78181;
 }
 
 :deep(.el-form-item__label) {
-  padding-bottom: 6px;
-  font-size: 14px;
-  line-height: 1.2;
-  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--el-text-color-primary);
 }
 
-:deep(.el-form-item__content) {
-  line-height: 1.2;
-}
-
-:deep(.el-input__wrapper) {
-  padding: 0 12px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(102, 126, 234, 0.2);
-}
-
-:deep(.el-input__wrapper:hover) {
-  border-color: rgba(102, 126, 234, 0.4);
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  border-color: var(--el-color-primary);
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-}
-
-:deep(.el-input__inner) {
-  height: 32px;
-  font-size: 14px;
-}
-
-:deep(.el-button--small) {
-  padding: 6px 12px;
-  height: 32px;
-  font-size: 14px;
-  border-radius: 8px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-:deep(.el-button--small:hover) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+:deep(.el-rate__icon) {
+  font-size: 24px;
 }
 
 :deep(.el-select) {
   width: 100%;
 }
 
-:deep(.el-select .el-input__wrapper) {
-  border-radius: 8px;
-}
-
-:deep(.el-rate) {
-  height: 28px;
-}
-
-:deep(.el-rate__item) {
-  font-size: 18px;
-  margin-right: 4px;
-}
-
-:deep(.el-textarea__inner) {
-  font-size: 14px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(102, 126, 234, 0.2);
-  transition: all 0.3s ease;
-}
-
-:deep(.el-textarea__inner:hover) {
-  border-color: rgba(102, 126, 234, 0.4);
-}
-
-:deep(.el-textarea__inner:focus) {
-  border-color: var(--el-color-primary);
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
-}
-
-:deep(.el-checkbox) {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-:deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-color: var(--el-color-primary);
-  border-color: var(--el-color-primary);
-}
-
-/* 上传按钮样式 */
-:deep(.upload-demo .el-button) {
-  background: linear-gradient(135deg, var(--el-color-success), var(--el-color-success-light-3));
-  border: none;
-  color: white;
-  font-weight: 500;
-}
-
-:deep(.upload-demo .el-button:hover) {
-  background: linear-gradient(135deg, var(--el-color-success-dark-2), var(--el-color-success));
-}
-
-/* 响应式布局 */
+/* 响应式调整 */
 @media (max-width: 768px) {
-  .record-form {
-    min-height: 450px;
-  }
-
   :deep(.el-card__body) {
-    min-height: 350px;
+    padding: 1rem;
   }
 
-  .form-fields {
-    min-height: 250px;
+  .form-header {
+    font-size: 1rem;
+  }
+
+  .timer-icon {
+    font-size: 2rem;
+  }
+
+  .timer-text {
+    font-size: 2.2rem;
+  }
+
+  .responsive-form {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }
-
-@media (max-width: 480px) {
-  .record-form {
-    min-height: 400px;
-  }
-
-  :deep(.el-card__body) {
-    min-height: 320px;
-  }
-
-  .form-fields {
-    min-height: 220px;
-  }
-}
-</style>
-
-<script lang="ts">
-export default {
-  name: 'RecordForm'
-}
-</script> 
+</style> 
