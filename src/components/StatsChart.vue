@@ -96,24 +96,24 @@ const updateChart = () => {
       {
         name: '次数',
         type: 'bar',
-        data: [store.stats.frequencyPerWeek]
+        data: store.stats.frequency
       },
       {
         name: '平均时长',
         type: 'line',
-        data: [store.stats.averageDuration]
+        data: store.stats.averageDuration
       },
       {
         name: '平均心情',
         type: 'line',
         yAxisIndex: 1,
-        data: [store.stats.averageMood]
+        data: store.stats.averageMood
       },
       {
         name: '平均精力',
         type: 'line',
         yAxisIndex: 1,
-        data: [store.stats.averageEnergy]
+        data: store.stats.averageEnergy
       }
     ],
     media: [
