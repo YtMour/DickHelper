@@ -118,7 +118,6 @@ import { ref, computed } from 'vue'
 import { useRecordStore } from '@/stores/recordStore'
 import {
   CaretRight,
-  CircleClose,
   Download,
   Timer,
   Upload,

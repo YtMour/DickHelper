@@ -1,85 +1,203 @@
 import type { MasturbationRecord, MasturbationStats } from '../types/record'
 import CryptoJS from 'crypto-js'
+import { logger } from '../utils/logger'
+import { validateRecord, validateRecords, DataCleaner } from '../utils/validation'
+import { SmartCache } from '../utils/cache'
 
 const STORAGE_KEY = 'masturbation_records'
 const BACKUP_KEY = 'masturbation_records_backup'
-const ENCRYPTION_KEY = 'your-secret-key' // 建议使用环境变量
+
+// 安全的密钥管理
+class SecurityManager {
+    private static getEncryptionKey(): string {
+        // 在浏览器环境中，不使用process.env
+        // 直接使用设备唯一密钥
+        let deviceKey = localStorage.getItem('device_encryption_key')
+        if (!deviceKey) {
+            deviceKey = this.generateDeviceKey()
+            localStorage.setItem('device_encryption_key', deviceKey)
+        }
+        return deviceKey
+    }
+
+    private static generateDeviceKey(): string {
+        const userAgent = navigator.userAgent
+        const timestamp = Date.now().toString()
+        const random = Math.random().toString(36)
+        return CryptoJS.SHA256(userAgent + timestamp + random).toString()
+    }
+
+    static encrypt(data: string): string {
+        return CryptoJS.AES.encrypt(data, this.getEncryptionKey()).toString()
+    }
+
+    static decrypt(encryptedData: string): string {
+        const bytes = CryptoJS.AES.decrypt(encryptedData, this.getEncryptionKey())
+        return bytes.toString(CryptoJS.enc.Utf8)
+    }
+}
 
 export class StorageService {
     private static encrypt(data: string): string {
-        return CryptoJS.AES.encrypt(data, ENCRYPTION_KEY).toString()
+        return SecurityManager.encrypt(data)
     }
 
     private static decrypt(encryptedData: string): string {
-        const bytes = CryptoJS.AES.decrypt(encryptedData, ENCRYPTION_KEY)
-        return bytes.toString(CryptoJS.enc.Utf8)
+        return SecurityManager.decrypt(encryptedData)
     }
 
     static async exportData(): Promise<string> {
-        const records = await this.getRecords()
-        return this.encrypt(JSON.stringify(records, null, 2))
+        const startTime = performance.now()
+        try {
+            logger.info('开始导出数据', {}, 'StorageService')
+            const records = await this.getRecords()
+            const exportData = this.encrypt(JSON.stringify(records, null, 2))
+            const duration = performance.now() - startTime
+            logger.info('数据导出完成', { recordCount: records.length, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+            return exportData
+        } catch (error) {
+            const duration = performance.now() - startTime
+            logger.error('数据导出失败', { error, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+            throw error
+        }
     }
 
     static async importData(jsonData: string): Promise<boolean> {
+        logger.info('开始导入数据', {}, 'StorageService')
+
         try {
             const decryptedData = this.decrypt(jsonData)
-            const records = JSON.parse(decryptedData)
-            if (!Array.isArray(records)) return false
-            
-            // 验证数据格式
-            const isValid = records.every(record => 
-                typeof record.id === 'string' &&
-                record.startTime &&
-                typeof record.duration === 'number'
-            )
-            
-            if (!isValid) return false
-            
-            // 转换日期格式
-            const formattedRecords = records.map(record => ({
-                ...record,
-                startTime: new Date(record.startTime),
-                endTime: record.endTime ? new Date(record.endTime) : undefined
-            }))
-            
-            await this.setRecords(formattedRecords)
+            const rawRecords = JSON.parse(decryptedData)
+
+            // 使用新的验证系统
+            const validatedRecords = validateRecords(rawRecords)
+
+            // 数据清理
+            const cleanedRecords = DataCleaner.removeDuplicates(validatedRecords)
+            const finalRecords = DataCleaner.cleanAnomalies(cleanedRecords)
+
+            await this.setRecords(finalRecords)
+
+            // 清除缓存
+            SmartCache.invalidateRecordCaches()
+
+            logger.info('数据导入完成', {
+                originalCount: rawRecords.length,
+                validCount: validatedRecords.length,
+                finalCount: finalRecords.length
+            }, 'StorageService')
+
             return true
         } catch (error) {
+            logger.error('数据导入失败', { error }, 'StorageService')
             return false
         }
     }
 
     static async saveRecord(record: MasturbationRecord): Promise<void> {
-        const records = await this.getRecords()
-        records.push(record)
-        await this.setRecords(records)
+        const startTime = performance.now()
+        try {
+            logger.debug('保存记录', { id: record.id }, 'StorageService')
+
+            // 验证记录
+            const validatedRecord = validateRecord(record)
+
+            const records = await this.getRecords()
+            records.push(validatedRecord)
+
+            // 排序并去重
+            const cleanedRecords = DataCleaner.removeDuplicates(records)
+            const sortedRecords = DataCleaner.sortByTime(cleanedRecords)
+
+            await this.setRecords(sortedRecords)
+
+            // 清除缓存
+            SmartCache.invalidateRecordCaches()
+
+            const duration = performance.now() - startTime
+            logger.debug('记录保存完成', { id: record.id, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+        } catch (error) {
+            const duration = performance.now() - startTime
+            logger.error('记录保存失败', { id: record.id, error, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+            throw error
+        }
     }
 
     static async updateRecord(id: string, updates: Partial<MasturbationRecord>): Promise<void> {
-        const records = await this.getRecords()
-        const index = records.findIndex(record => record.id === id)
-        if (index === -1) throw new Error('记录不存在')
-        
-        records[index] = {
-            ...records[index],
-            ...updates,
-            startTime: updates.startTime ? new Date(updates.startTime) : records[index].startTime,
-            endTime: updates.endTime ? new Date(updates.endTime) : records[index].endTime
+        const startTime = performance.now()
+        try {
+            logger.debug('更新记录', { id, updates }, 'StorageService')
+
+            const records = await this.getRecords()
+            const index = records.findIndex(record => record.id === id)
+            if (index === -1) {
+                throw new Error(`记录不存在: ${id}`)
+            }
+
+            // 合并更新数据
+            const updatedRecord = {
+                ...records[index],
+                ...updates,
+                startTime: updates.startTime ? new Date(updates.startTime) : records[index].startTime,
+                endTime: updates.endTime ? new Date(updates.endTime) : records[index].endTime
+            }
+
+            // 验证更新后的记录
+            records[index] = validateRecord(updatedRecord)
+
+            await this.setRecords(records)
+
+            // 清除缓存
+            SmartCache.invalidateRecordCaches()
+
+            const duration = performance.now() - startTime
+            logger.debug('记录更新完成', { id, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+        } catch (error) {
+            const duration = performance.now() - startTime
+            logger.error('记录更新失败', { id, error, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+            throw error
         }
-        
-        await this.setRecords(records)
     }
 
     static async getRecords(): Promise<MasturbationRecord[]> {
-        const encryptedData = localStorage.getItem(STORAGE_KEY)
-        if (!encryptedData) return []
-        
-        const decryptedData = this.decrypt(encryptedData)
-        return JSON.parse(decryptedData).map((record: any) => ({
-            ...record,
-            startTime: new Date(record.startTime),
-            endTime: record.endTime ? new Date(record.endTime) : undefined
-        }))
+        const startTime = performance.now()
+        try {
+            // 尝试从缓存获取
+            const cachedRecords = SmartCache.getCachedRecords()
+            if (cachedRecords) {
+                logger.debug('从缓存获取记录', { count: cachedRecords.length }, 'StorageService')
+                return cachedRecords
+            }
+
+            const encryptedData = localStorage.getItem(STORAGE_KEY)
+            if (!encryptedData) {
+                logger.debug('未找到存储数据，返回空数组', {}, 'StorageService')
+                return []
+            }
+
+            const decryptedData = this.decrypt(encryptedData)
+            const rawRecords = JSON.parse(decryptedData)
+
+            // 验证和清理数据
+            const validatedRecords = validateRecords(rawRecords)
+            const cleanedRecords = DataCleaner.cleanAnomalies(validatedRecords)
+            const sortedRecords = DataCleaner.sortByTime(cleanedRecords)
+
+            // 缓存结果
+            SmartCache.cacheRecords(sortedRecords)
+
+            const duration = performance.now() - startTime
+            logger.debug('记录加载完成', {
+                count: sortedRecords.length,
+                duration: `${duration.toFixed(2)}ms`
+            }, 'StorageService')
+
+            return sortedRecords
+        } catch (error) {
+            const duration = performance.now() - startTime
+            logger.error('记录加载失败', { error, duration: `${duration.toFixed(2)}ms` }, 'StorageService')
+            return []
+        }
     }
 
     private static async setRecords(records: MasturbationRecord[]): Promise<void> {

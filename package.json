@@ -2,6 +2,8 @@
   "name": "dickhelper",
   "private": true,
   "version": "0.1.0",
+  "description": "个人健康数据管理助手",
+  "author": "DickHelper Team",
   "type": "module",
   "scripts": {
     "dev": "vite",

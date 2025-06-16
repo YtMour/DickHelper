@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useRecordStore } from '@/stores/recordStore'
 import { Delete, Search } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import type { MasturbationRecord } from '@/types/record'
+// import type { MasturbationRecord } from '@/types/record'
 
 defineOptions({
   name: 'HistoryList'
